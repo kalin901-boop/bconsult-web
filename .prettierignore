@@ -1,0 +1,14 @@
+node_modules/
+.next/
+out/
+build/
+coverage/
+next-env.d.ts
+*.tsbuildinfo
+.vercel/
+test-results/
+playwright-report/
+package-lock.json
+.env
+.env.*
+!.env.example
