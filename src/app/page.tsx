@@ -16,6 +16,7 @@ export default function HomePage() {
           <li>Счетоводни услуги</li>
           <li>Застраховки</li>
           <li>Административно съдействие</li>
+          <li>И още много други</li>
         </ul>
         <p className="coming-soon-note">Подготвяме нашия нов сайт. До скоро!</p>
       </div>
