@@ -1,5 +1,35 @@
 import { expect, test } from "@playwright/test";
 
+const marketQuotes = [
+  { label: "1 USD", value: "0,8876 EUR", source: "ЕЦБ · 04.11.2026" },
+  { label: "1 EUR", value: "1,1267 USD", source: "ЕЦБ · 04.11.2026" },
+  { label: "1 GBP", value: "1,1982 EUR", source: "ЕЦБ · 04.11.2026" },
+  {
+    label: "Злато",
+    value: "3 603,30 EUR / тройунция",
+    source: "Gold-API 18:54 · ЕЦБ 04.11.2026",
+  },
+  {
+    label: "Сребро",
+    value: "46,42 EUR / тройунция",
+    source: "Gold-API 18:54 · ЕЦБ 04.11.2026",
+  },
+  {
+    label: "Брент",
+    value: "113,70 EUR / барел",
+    source: "EIA / FRED 03.11.2026 · ЕЦБ 04.11.2026",
+  },
+];
+
+test.beforeEach(async ({ page }) => {
+  await page.route("**/api/market-data", (route) =>
+    route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({ quotes: marketQuotes }),
+    }),
+  );
+});
+
 test("the header displays the B-Consult logo", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveTitle("Б-Консулт");
@@ -8,6 +38,52 @@ test("the header displays the B-Consult logo", async ({ page }) => {
   expect(
     await logo.evaluate((image: HTMLImageElement) => image.naturalWidth),
   ).toBeGreaterThan(0);
+});
+
+test("the market ticker shows Bulgaria time and all quotes", async ({
+  page,
+}) => {
+  await page.goto("/");
+
+  const ticker = page.getByRole("region", {
+    name: "Час и пазарни котировки",
+  });
+  const clock = ticker.getByRole("timer", {
+    name: "Точно време в България",
+  });
+  await expect(clock).toHaveText(/^\d{2}:\d{2}:\d{2}$/);
+  await expect(ticker.locator(".ticker-quote-label").first()).toHaveText(
+    "1 USD",
+  );
+  await expect(ticker.locator(".ticker-quote-label").nth(5)).toHaveText(
+    "Брент",
+  );
+  await expect(
+    ticker.getByText("информативни", { exact: false }),
+  ).toBeVisible();
+  await expect(ticker.getByText("на всеки 15 минути")).toBeVisible();
+  await expect(ticker.locator(".ticker-quote-source").nth(3)).toHaveText(
+    "Gold-API 18:54 · ЕЦБ 04.11.2026",
+  );
+});
+
+test("the market ticker reports unavailable quotes", async ({ page }) => {
+  await page.unroute("**/api/market-data");
+  await page.route("**/api/market-data", (route) =>
+    route.fulfill({
+      status: 502,
+      contentType: "application/json",
+      body: JSON.stringify({ error: "В момента котировките не са достъпни." }),
+    }),
+  );
+
+  await page.goto("/");
+  await expect(
+    page.getByRole("status").getByText("Котировките временно не са достъпни."),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("timer", { name: "Точно време в България" }),
+  ).toHaveText(/^\d{2}:\d{2}:\d{2}$/);
 });
 
 test("the homepage shows a service-focused modern feature card", async ({
