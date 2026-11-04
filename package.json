@@ -21,8 +21,7 @@
     "react": "19.3.1",
     "react-dom": "19.3.1"
     "openai": "^4.0.0"
-  },
-  },
+
   "devDependencies": {
     "@playwright/test": "1.64.1",
     "@tailwindcss/postcss": "4.3.3",
