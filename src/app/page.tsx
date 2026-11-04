@@ -15,11 +15,40 @@ export default function HomePage() {
         </p>
         <p className="coming-soon-note">Подготвяме нашия нов сайт. До скоро!</p>
       </div>
-      <div className="hero-art" aria-hidden="true">
-        <span className="art-circle" />
-        <span className="art-arch" />
-        <span className="art-square" />
-      </div>
+      <aside className="hero-art" aria-label="Основни направления">
+        <div className="hero-card">
+          <div className="hero-card-heading">
+            <span className="hero-card-mark" aria-hidden="true">
+              БК
+            </span>
+            <p>Б-Консулт</p>
+          </div>
+          <h2>Основни направления</h2>
+          <ul className="hero-card-services">
+            <li>
+              <span className="service-check" aria-hidden="true">
+                ✓
+              </span>
+              Счетоводни услуги
+            </li>
+            <li>
+              <span className="service-check" aria-hidden="true">
+                ✓
+              </span>
+              Административни услуги
+            </li>
+            <li>
+              <span className="service-check" aria-hidden="true">
+                ✓
+              </span>
+              Застраховки
+            </li>
+          </ul>
+          <div className="hero-card-accent" aria-hidden="true">
+            <span />
+          </div>
+        </div>
+      </aside>
     </main>
   );
 }

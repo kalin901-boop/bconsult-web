@@ -2,11 +2,30 @@ import { expect, test } from "@playwright/test";
 
 test("the header displays the B-Consult logo", async ({ page }) => {
   await page.goto("/");
+  await expect(page).toHaveTitle("Б-Консулт");
   const logo = page.getByRole("img", { name: "Б-Консулт — лого" });
   await expect(logo).toBeVisible();
   expect(
     await logo.evaluate((image: HTMLImageElement) => image.naturalWidth),
   ).toBeGreaterThan(0);
+});
+
+test("the homepage shows a service-focused modern feature card", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const featureCard = page.getByRole("complementary", {
+    name: "Основни направления",
+  });
+  await expect(featureCard).toBeVisible();
+  await expect(
+    featureCard.getByRole("heading", { name: "Основни направления" }),
+  ).toBeVisible();
+  await expect(featureCard.locator(".hero-card-services li")).toContainText([
+    "Счетоводни услуги",
+    "Административни услуги",
+    "Застраховки",
+  ]);
 });
 
 test("the services menu opens a service page", async ({ page, isMobile }) => {

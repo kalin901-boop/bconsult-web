@@ -8,7 +8,7 @@ import { site } from "@/lib/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: `${site.name} — Ново начало`,
+  title: site.name,
   description: site.description,
 };
 
