@@ -1,23 +1,27 @@
 import { expect, test } from "@playwright/test";
 
 const marketQuotes = [
-  { label: "1 USD", value: "0,8876 EUR", source: "ЕЦБ · 04.11.2026" },
   { label: "1 EUR", value: "1,1267 USD", source: "ЕЦБ · 04.11.2026" },
-  { label: "1 GBP", value: "1,1982 EUR", source: "ЕЦБ · 04.11.2026" },
+  { label: "1 GBP", value: "1,3500 USD", source: "ЕЦБ · 04.11.2026" },
   {
     label: "Злато",
-    value: "3 603,30 EUR / тройунция",
-    source: "Gold-API 18:54 · ЕЦБ 04.11.2026",
+    value: "4 065,70 USD / тройунция",
+    source: "Gold-API · 18:54",
   },
   {
     label: "Сребро",
-    value: "46,42 EUR / тройунция",
-    source: "Gold-API 18:54 · ЕЦБ 04.11.2026",
+    value: "52,27 USD / тройунция",
+    source: "Gold-API · 18:54",
   },
   {
     label: "Брент",
-    value: "113,70 EUR / барел",
-    source: "EIA / FRED 03.11.2026 · ЕЦБ 04.11.2026",
+    value: "128,08 USD / барел",
+    source: "EIA / FRED · 03.11.2026",
+  },
+  {
+    label: "Биткойн",
+    value: "80 226,57 USD",
+    source: "Gold-API · 18:54",
   },
 ];
 
@@ -53,18 +57,24 @@ test("the market ticker shows Bulgaria time and all quotes", async ({
   });
   await expect(clock).toHaveText(/^\d{2}:\d{2}:\d{2}$/);
   await expect(ticker.locator(".ticker-quote-label").first()).toHaveText(
-    "1 USD",
+    "1 EUR",
+  );
+  await expect(ticker.locator(".ticker-quote-label").nth(4)).toHaveText(
+    "Брент",
   );
   await expect(ticker.locator(".ticker-quote-label").nth(5)).toHaveText(
-    "Брент",
+    "Биткойн",
   );
   await expect(
     ticker.getByText("информативни", { exact: false }),
   ).toBeVisible();
   await expect(ticker.getByText("на всеки 15 минути")).toBeVisible();
-  await expect(ticker.locator(".ticker-quote-source").nth(3)).toHaveText(
-    "Gold-API 18:54 · ЕЦБ 04.11.2026",
+  await expect(ticker.locator(".ticker-quote-source").nth(2)).toHaveText(
+    "Gold-API · 18:54",
   );
+  await expect(
+    ticker.locator(".ticker-quote").filter({ hasText: "Биткойн" }).first(),
+  ).toContainText("USD");
 });
 
 test("the market ticker reports unavailable quotes", async ({ page }) => {

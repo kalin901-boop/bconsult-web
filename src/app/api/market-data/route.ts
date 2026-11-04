@@ -6,7 +6,7 @@ type ExchangeRatesResponse = {
   };
 };
 
-type MetalPriceResponse = {
+type UsdPriceResponse = {
   currency: string;
   name: string;
   price: number;
@@ -25,12 +25,12 @@ const cacheHeaders = {
   "Cache-Control": "public, s-maxage=900, stale-while-revalidate=1800",
 };
 
-function isValidMetalPrice(value: unknown): value is MetalPriceResponse {
+function isValidUsdPrice(value: unknown): value is UsdPriceResponse {
   if (typeof value !== "object" || value === null) {
     return false;
   }
 
-  const price = value as Partial<MetalPriceResponse>;
+  const price = value as Partial<UsdPriceResponse>;
 
   return (
     typeof price.name === "string" &&
@@ -152,7 +152,7 @@ async function fetchBrentPrice() {
 
 export async function GET() {
   try {
-    const [exchangeRates, goldPrice, silverPrice, brentPrice] =
+    const [exchangeRates, goldPrice, silverPrice, bitcoinPrice, brentPrice] =
       await Promise.all([
         fetchJson(
           "https://api.frankfurter.dev/v1/latest?base=EUR&symbols=USD,GBP",
@@ -160,6 +160,7 @@ export async function GET() {
         ),
         fetchJson("https://api.gold-api.com/price/XAU", 300),
         fetchJson("https://api.gold-api.com/price/XAG", 300),
+        fetchJson("https://api.gold-api.com/price/BTC", 300),
         fetchBrentPrice(),
       ]);
 
@@ -167,18 +168,16 @@ export async function GET() {
       throw new Error("Currency provider returned invalid exchange rates");
     }
 
-    if (!isValidMetalPrice(goldPrice) || !isValidMetalPrice(silverPrice)) {
-      throw new Error("Metals provider returned invalid price data");
+    if (
+      !isValidUsdPrice(goldPrice) ||
+      !isValidUsdPrice(silverPrice) ||
+      !isValidUsdPrice(bitcoinPrice)
+    ) {
+      throw new Error("Asset provider returned invalid USD price data");
     }
 
-    const usdToEur = 1 / exchangeRates.rates.USD;
-    const gbpToEur = 1 / exchangeRates.rates.GBP;
+    const gbpToUsd = exchangeRates.rates.USD / exchangeRates.rates.GBP;
     const quotes: MarketQuote[] = [
-      {
-        label: "1 USD",
-        value: `${formatNumber(usdToEur)} EUR`,
-        source: `ЕЦБ · ${formatDate(exchangeRates.date)}`,
-      },
       {
         label: "1 EUR",
         value: `${formatNumber(exchangeRates.rates.USD)} USD`,
@@ -186,23 +185,28 @@ export async function GET() {
       },
       {
         label: "1 GBP",
-        value: `${formatNumber(gbpToEur)} EUR`,
+        value: `${formatNumber(gbpToUsd)} USD`,
         source: `ЕЦБ · ${formatDate(exchangeRates.date)}`,
       },
       {
         label: "Злато",
-        value: `${formatNumber(goldPrice.price * usdToEur, 2)} EUR / тройунция`,
-        source: `Gold-API ${formatTime(goldPrice.updatedAt)} · ЕЦБ ${formatDate(exchangeRates.date)}`,
+        value: `${formatNumber(goldPrice.price, 2)} USD / тройунция`,
+        source: `Gold-API · ${formatTime(goldPrice.updatedAt)}`,
       },
       {
         label: "Сребро",
-        value: `${formatNumber(silverPrice.price * usdToEur, 2)} EUR / тройунция`,
-        source: `Gold-API ${formatTime(silverPrice.updatedAt)} · ЕЦБ ${formatDate(exchangeRates.date)}`,
+        value: `${formatNumber(silverPrice.price, 2)} USD / тройунция`,
+        source: `Gold-API · ${formatTime(silverPrice.updatedAt)}`,
+      },
+      {
+        label: "Биткойн",
+        value: `${formatNumber(bitcoinPrice.price, 2)} USD`,
+        source: `Gold-API · ${formatTime(bitcoinPrice.updatedAt)}`,
       },
       {
         label: "Брент",
-        value: `${formatNumber(brentPrice.price * usdToEur, 2)} EUR / барел`,
-        source: `EIA / FRED ${formatDate(brentPrice.date)} · ЕЦБ ${formatDate(exchangeRates.date)}`,
+        value: `${formatNumber(brentPrice.price, 2)} USD / барел`,
+        source: `EIA / FRED · ${formatDate(brentPrice.date)}`,
       },
     ];
 
