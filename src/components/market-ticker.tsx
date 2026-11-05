@@ -10,9 +10,10 @@ type MarketQuote = {
 
 type MarketDataResponse = {
   quotes: MarketQuote[];
+  hasUnavailableSources: boolean;
 };
 
-const refreshInterval = 15 * 60 * 1000;
+const refreshInterval = 5 * 60 * 1000;
 
 function formatSofiaTime(date: Date) {
   return new Intl.DateTimeFormat("bg-BG", {
@@ -42,6 +43,7 @@ export function MarketTicker() {
   const [now, setNow] = useState<Date | null>(null);
   const [quotes, setQuotes] = useState<MarketQuote[] | null>(null);
   const [hasError, setHasError] = useState(false);
+  const [hasUnavailableSources, setHasUnavailableSources] = useState(false);
   const time = now ? formatSofiaTime(now) : "--:--:--";
 
   useEffect(() => {
@@ -54,10 +56,17 @@ export function MarketTicker() {
 
   useEffect(() => {
     let active = true;
+    let loading = false;
 
     const loadQuotes = async () => {
+      if (loading || document.visibilityState === "hidden") {
+        return;
+      }
+
+      loading = true;
       try {
         const response = await fetch("/api/market-data", {
+          cache: "no-store",
           signal: AbortSignal.timeout(20000),
         });
         if (!response.ok) {
@@ -67,6 +76,7 @@ export function MarketTicker() {
         const data = (await response.json()) as MarketDataResponse;
         if (
           !Array.isArray(data.quotes) ||
+          typeof data.hasUnavailableSources !== "boolean" ||
           data.quotes.some(
             (quote) =>
               typeof quote.label !== "string" ||
@@ -79,12 +89,16 @@ export function MarketTicker() {
 
         if (active) {
           setQuotes(data.quotes);
+          setHasUnavailableSources(data.hasUnavailableSources);
           setHasError(false);
         }
       } catch {
         if (active) {
           setHasError(true);
+          setHasUnavailableSources(false);
         }
+      } finally {
+        loading = false;
       }
     };
 
@@ -92,10 +106,17 @@ export function MarketTicker() {
     const interval = window.setInterval(() => {
       void loadQuotes();
     }, refreshInterval);
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        void loadQuotes();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
       active = false;
       window.clearInterval(interval);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, []);
 
@@ -135,12 +156,19 @@ export function MarketTicker() {
           </div>
         )}
       </div>
-      <p className="ticker-disclaimer">
-        {hasError && quotes
-          ? "Обновяването не успя; показани са последните получени котировки. "
-          : ""}
-        Лентата се обновява на всеки 15 минути; котировките са информативни и
-        носят дата/час от източника.
+      <p
+        className="ticker-disclaimer"
+        role={
+          hasUnavailableSources || (hasError && quotes) ? "status" : undefined
+        }
+      >
+        {hasUnavailableSources
+          ? "Някои котировки временно не са достъпни. "
+          : hasError && quotes
+            ? "Обновяването не успя; показани са последните получени котировки. "
+            : ""}
+        Лентата проверява за обновяване на всеки 5 минути; котировките са
+        информативни и носят дата/час от източника.
       </p>
     </section>
   );

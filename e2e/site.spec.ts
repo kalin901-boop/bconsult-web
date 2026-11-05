@@ -29,7 +29,10 @@ test.beforeEach(async ({ page }) => {
   await page.route("**/api/market-data", (route) =>
     route.fulfill({
       contentType: "application/json",
-      body: JSON.stringify({ quotes: marketQuotes }),
+      body: JSON.stringify({
+        quotes: marketQuotes,
+        hasUnavailableSources: false,
+      }),
     }),
   );
 });
@@ -68,13 +71,60 @@ test("the market ticker shows Bulgaria time and all quotes", async ({
   await expect(
     ticker.getByText("информативни", { exact: false }),
   ).toBeVisible();
-  await expect(ticker.getByText("на всеки 15 минути")).toBeVisible();
+  await expect(ticker.getByText("на всеки 5 минути")).toBeVisible();
   await expect(ticker.locator(".ticker-quote-source").nth(2)).toHaveText(
     "Gold-API · 18:54",
   );
   await expect(
     ticker.locator(".ticker-quote").filter({ hasText: "Биткойн" }).first(),
   ).toContainText("USD");
+});
+
+test("the market ticker retries after five minutes", async ({ page }) => {
+  await page.unroute("**/api/market-data");
+  await page.clock.install();
+  let requests = 0;
+  await page.route("**/api/market-data", (route) => {
+    requests += 1;
+    return route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({
+        quotes: marketQuotes,
+        hasUnavailableSources: false,
+      }),
+    });
+  });
+
+  await page.goto("/");
+  await expect.poll(() => requests).toBe(1);
+  await page.clock.fastForward(5 * 60 * 1000);
+  await expect.poll(() => requests).toBe(2);
+});
+
+test("the market ticker identifies partially unavailable quotes", async ({
+  page,
+}) => {
+  await page.unroute("**/api/market-data");
+  await page.route("**/api/market-data", (route) =>
+    route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({
+        quotes: marketQuotes.slice(0, 2),
+        hasUnavailableSources: true,
+      }),
+    }),
+  );
+
+  await page.goto("/");
+  await expect(
+    page.getByText("Някои котировки временно не са достъпни."),
+  ).toBeVisible();
+  await expect(
+    page
+      .getByRole("region", { name: "Час и пазарни котировки" })
+      .locator(".ticker-quote-label")
+      .first(),
+  ).toBeVisible();
 });
 
 test("the market ticker reports unavailable quotes", async ({ page }) => {

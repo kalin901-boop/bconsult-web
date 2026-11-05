@@ -22,7 +22,12 @@ type MarketQuote = {
 export const dynamic = "force-dynamic";
 
 const cacheHeaders = {
-  "Cache-Control": "public, s-maxage=900, stale-while-revalidate=1800",
+  complete: {
+    "Cache-Control": "public, s-maxage=300, stale-while-revalidate=60",
+  },
+  partial: {
+    "Cache-Control": "public, s-maxage=30, stale-while-revalidate=30",
+  },
 };
 
 function isValidUsdPrice(value: unknown): value is UsdPriceResponse {
@@ -150,70 +155,106 @@ async function fetchBrentPrice() {
   return { date, price };
 }
 
+async function loadExchangeQuotes(): Promise<MarketQuote[]> {
+  const exchangeRates = await fetchJson(
+    "https://api.frankfurter.dev/v1/latest?base=EUR&symbols=USD,GBP",
+    86400,
+  );
+
+  if (!isValidExchangeRates(exchangeRates)) {
+    throw new Error("Currency provider returned invalid exchange rates");
+  }
+
+  const gbpToUsd = exchangeRates.rates.USD / exchangeRates.rates.GBP;
+  return [
+    {
+      label: "1 EUR",
+      value: `${formatNumber(exchangeRates.rates.USD)} USD`,
+      source: `ЕЦБ · ${formatDate(exchangeRates.date)}`,
+    },
+    {
+      label: "1 GBP",
+      value: `${formatNumber(gbpToUsd)} USD`,
+      source: `ЕЦБ · ${formatDate(exchangeRates.date)}`,
+    },
+  ];
+}
+
+async function loadAssetQuote(
+  url: string,
+  label: string,
+  unit = "",
+): Promise<MarketQuote[]> {
+  const value = await fetchJson(url, 300);
+  if (!isValidUsdPrice(value)) {
+    throw new Error(`Asset provider returned invalid ${label} price data`);
+  }
+
+  return [
+    {
+      label,
+      value: `${formatNumber(value.price, 2)} USD${unit}`,
+      source: `Gold-API · ${formatTime(value.updatedAt)}`,
+    },
+  ];
+}
+
+async function loadBrentQuote(): Promise<MarketQuote[]> {
+  const brentPrice = await fetchBrentPrice();
+  return [
+    {
+      label: "Брент",
+      value: `${formatNumber(brentPrice.price, 2)} USD / барел`,
+      source: `EIA / FRED · ${formatDate(brentPrice.date)}`,
+    },
+  ];
+}
+
 export async function GET() {
-  try {
-    const [exchangeRates, goldPrice, silverPrice, bitcoinPrice, brentPrice] =
-      await Promise.all([
-        fetchJson(
-          "https://api.frankfurter.dev/v1/latest?base=EUR&symbols=USD,GBP",
-          86400,
-        ),
-        fetchJson("https://api.gold-api.com/price/XAU", 300),
-        fetchJson("https://api.gold-api.com/price/XAG", 300),
-        fetchJson("https://api.gold-api.com/price/BTC", 300),
-        fetchBrentPrice(),
-      ]);
+  const sources = [
+    { name: "exchange rates", request: loadExchangeQuotes() },
+    {
+      name: "gold",
+      request: loadAssetQuote(
+        "https://api.gold-api.com/price/XAU",
+        "Злато",
+        " / тройунция",
+      ),
+    },
+    {
+      name: "silver",
+      request: loadAssetQuote(
+        "https://api.gold-api.com/price/XAG",
+        "Сребро",
+        " / тройунция",
+      ),
+    },
+    {
+      name: "bitcoin",
+      request: loadAssetQuote("https://api.gold-api.com/price/BTC", "Биткойн"),
+    },
+    { name: "Brent", request: loadBrentQuote() },
+  ];
 
-    if (!isValidExchangeRates(exchangeRates)) {
-      throw new Error("Currency provider returned invalid exchange rates");
+  const results = await Promise.allSettled(
+    sources.map(({ request }) => request),
+  );
+  const quotes: MarketQuote[] = [];
+  let hasUnavailableSources = false;
+
+  results.forEach((result, index) => {
+    if (result.status === "fulfilled") {
+      quotes.push(...result.value);
+    } else {
+      hasUnavailableSources = true;
+      console.error(
+        `Unable to load ${sources[index].name} market data:`,
+        result.reason,
+      );
     }
+  });
 
-    if (
-      !isValidUsdPrice(goldPrice) ||
-      !isValidUsdPrice(silverPrice) ||
-      !isValidUsdPrice(bitcoinPrice)
-    ) {
-      throw new Error("Asset provider returned invalid USD price data");
-    }
-
-    const gbpToUsd = exchangeRates.rates.USD / exchangeRates.rates.GBP;
-    const quotes: MarketQuote[] = [
-      {
-        label: "1 EUR",
-        value: `${formatNumber(exchangeRates.rates.USD)} USD`,
-        source: `ЕЦБ · ${formatDate(exchangeRates.date)}`,
-      },
-      {
-        label: "1 GBP",
-        value: `${formatNumber(gbpToUsd)} USD`,
-        source: `ЕЦБ · ${formatDate(exchangeRates.date)}`,
-      },
-      {
-        label: "Злато",
-        value: `${formatNumber(goldPrice.price, 2)} USD / тройунция`,
-        source: `Gold-API · ${formatTime(goldPrice.updatedAt)}`,
-      },
-      {
-        label: "Сребро",
-        value: `${formatNumber(silverPrice.price, 2)} USD / тройунция`,
-        source: `Gold-API · ${formatTime(silverPrice.updatedAt)}`,
-      },
-      {
-        label: "Биткойн",
-        value: `${formatNumber(bitcoinPrice.price, 2)} USD`,
-        source: `Gold-API · ${formatTime(bitcoinPrice.updatedAt)}`,
-      },
-      {
-        label: "Брент",
-        value: `${formatNumber(brentPrice.price, 2)} USD / барел`,
-        source: `EIA / FRED · ${formatDate(brentPrice.date)}`,
-      },
-    ];
-
-    return Response.json({ quotes }, { headers: cacheHeaders });
-  } catch (error) {
-    console.error("Unable to load market data:", error);
-
+  if (quotes.length === 0) {
     return Response.json(
       { error: "В момента котировките не са достъпни." },
       {
@@ -222,4 +263,13 @@ export async function GET() {
       },
     );
   }
+
+  return Response.json(
+    { quotes, hasUnavailableSources },
+    {
+      headers: hasUnavailableSources
+        ? cacheHeaders.partial
+        : cacheHeaders.complete,
+    },
+  );
 }
