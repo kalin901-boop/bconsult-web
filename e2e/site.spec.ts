@@ -190,6 +190,35 @@ test("the services menu opens a service page", async ({ page, isMobile }) => {
   }
 });
 
+test("the accounting service page lists its service areas", async ({
+  page,
+}) => {
+  await page.goto("/uslugi/schetovodni-uslugi");
+
+  await expect(
+    page.getByRole("heading", { name: "Текущо счетоводно обслужване" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "ДДС и данъци" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Заплати и осигуряване" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Годишно приключване и отчети",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Фирмени регистрации и административни услуги",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Свържете се с нас" }),
+  ).toHaveAttribute("href", "/kontakti");
+});
+
 test("all listed services have their own page", async ({ page }) => {
   const servicePages = [
     ["schetovodni-uslugi", "Счетоводни услуги"],
@@ -208,9 +237,11 @@ test("all listed services have their own page", async ({ page }) => {
     const response = await page.goto(`/uslugi/${slug}`);
     expect(response?.status()).toBe(200);
     await expect(page.getByRole("heading", { name: title })).toBeVisible();
-    await expect(
-      page.getByText("Подготвяме подробната информация за тази услуга."),
-    ).toBeVisible();
+    if (slug !== "schetovodni-uslugi") {
+      await expect(
+        page.getByText("Подготвяме подробната информация за тази услуга."),
+      ).toBeVisible();
+    }
   }
 });
 
