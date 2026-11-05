@@ -542,18 +542,25 @@ test("the contacts menu link opens the contact details", async ({
 
   await expect(page).toHaveURL("/kontakti");
   await expect(page.getByRole("heading", { name: "Контакти" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "0882961650" })).toHaveAttribute(
-    "href",
-    "tel:+359882961650",
-  );
-  await expect(page.getByRole("link", { name: "0887807097" })).toHaveAttribute(
-    "href",
-    "tel:+359887807097",
-  );
   await expect(
-    page.getByRole("link", { name: "office@bonev-consult.bg" }),
+    page.getByRole("link", { name: "Обади се: 0882961650" }),
+  ).toHaveAttribute("href", "tel:+359882961650");
+  await expect(
+    page.getByRole("link", { name: "Обади се: 0887807097" }),
+  ).toHaveAttribute("href", "tel:+359887807097");
+  await expect(
+    page.getByRole("link", { name: "Изпрати имейл" }),
   ).toHaveAttribute("href", "mailto:office@bonev-consult.bg");
   await expect(page.getByText("Кирково, ул. „Дружба“ 2")).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Отвори в Google Maps" }),
+  ).toHaveAttribute(
+    "href",
+    "https://www.google.com/maps/search/?api=1&query=Кирково%2C%20ул.%20%22Дружба%22%202",
+  );
+  await expect(page.getByText("Понеделник–събота")).toBeVisible();
+  await expect(page.getByText("09:00–13:00 и 14:00–18:00")).toBeVisible();
+  await expect(page.getByText("Почивен ден")).toBeVisible();
 
   if (isMobile) {
     await expect(
