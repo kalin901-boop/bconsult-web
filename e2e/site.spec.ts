@@ -218,11 +218,22 @@ test("the homepage shows a service-focused modern feature card", async ({
     "Административни услуги",
     "Застраховки",
   ]);
+  await expect(
+    featureCard.getByRole("link", { name: "Счетоводни услуги" }),
+  ).toHaveAttribute("href", "/uslugi/schetovodni-uslugi");
+  await expect(
+    featureCard.getByRole("link", { name: "Административни услуги" }),
+  ).toHaveAttribute("href", "/uslugi/administrativni-uslugi");
+  await expect(
+    featureCard.getByRole("link", { name: "Застраховки" }),
+  ).toHaveAttribute("href", "/uslugi/zastrahovki");
+  await expect(
+    page.getByRole("link", { name: "Свържете се с нас" }),
+  ).toHaveAttribute("href", "/kontakti");
 });
 
 test("the services menu opens a service page", async ({ page, isMobile }) => {
   await page.goto("/");
-  await expect(page.locator("main a")).toHaveCount(0);
 
   if (isMobile) {
     await page.locator(".mobile-navigation > summary").click();

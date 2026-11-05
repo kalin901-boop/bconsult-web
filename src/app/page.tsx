@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { MarketTicker } from "@/components/market-ticker";
 import { site } from "@/lib/site";
@@ -33,6 +34,9 @@ export default function HomePage() {
           <p className="hero-description">
             Вие гледате напред. Ние се грижим за важните детайли.
           </p>
+          <Link className="home-link hero-contact-link" href="/kontakti">
+            Свържете се с нас <span aria-hidden="true">↗</span>
+          </Link>
         </div>
         <aside className="hero-art" aria-label="Основни направления">
           <div className="hero-card">
@@ -48,19 +52,21 @@ export default function HomePage() {
                 <span className="service-check" aria-hidden="true">
                   ✓
                 </span>
-                Счетоводни услуги
+                <Link href="/uslugi/schetovodni-uslugi">Счетоводни услуги</Link>
               </li>
               <li>
                 <span className="service-check" aria-hidden="true">
                   ✓
                 </span>
-                Административни услуги
+                <Link href="/uslugi/administrativni-uslugi">
+                  Административни услуги
+                </Link>
               </li>
               <li>
                 <span className="service-check" aria-hidden="true">
                   ✓
                 </span>
-                Застраховки
+                <Link href="/uslugi/zastrahovki">Застраховки</Link>
               </li>
             </ul>
             <div className="hero-card-accent" aria-hidden="true">
