@@ -20,27 +20,20 @@ export async function generateMetadata({
   const service = services.find((item) => item.slug === slug);
 
   if (!service) {
-    return { title: `Услуги | ${site.name}` };
+    return { title: "Услуги" };
   }
 
   return {
-    title: `${service.title} | ${site.name}`,
-    description:
-      slug === "schetovodni-uslugi"
-        ? `Счетоводно обслужване, ДДС и данъци, заплати, годишно приключване и консултации от ${site.name}.`
-        : slug === "administrativni-uslugi"
-          ? `Подготовка на документи и съдействие пред държавни и общински институции от ${site.name}.`
-          : slug === "sadeistvie-pred-darzhavni-institutsii"
-            ? `Съдействие с документи, заявления и справки пред държавни и общински институции от ${site.name}.`
-            : slug === "evropeiski-i-natsionalni-proekti"
-              ? `Консултации, подготовка на проектни предложения и съдействие по европейски и национални програми от ${site.name}.`
-              : slug === "registratsiya-na-firmi-i-npo"
-                ? `Съдействие при регистрация и промени на фирми и организации с нестопанска цел от ${site.name}.`
-                : slug === "dokumenti-za-pensionirane"
-                  ? `Съдействие при подготовка, подаване и проследяване на документи за пенсиониране от ${site.name}.`
-                  : slug === "zastrahovki"
-                    ? `Работим с наши партньори. Очаквайте повече информация скоро.`
-                    : `${service.title} от ${site.name}.`,
+    title: service.title,
+    description: service.description,
+    alternates: {
+      canonical: `/uslugi/${service.slug}`,
+    },
+    openGraph: {
+      title: `${service.title} | ${site.name}`,
+      description: service.description,
+      url: `${site.url}/uslugi/${service.slug}`,
+    },
   };
 }
 

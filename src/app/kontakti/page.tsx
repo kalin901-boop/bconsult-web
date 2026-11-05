@@ -3,8 +3,16 @@ import type { Metadata } from "next";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `Контакти | ${site.name}`,
+  title: "Контакти",
   description: `Свържете се с ${site.name} по телефон или имейл.`,
+  alternates: {
+    canonical: "/kontakti",
+  },
+  openGraph: {
+    title: `Контакти | ${site.name}`,
+    description: `Свържете се с ${site.name} по телефон или имейл.`,
+    url: `${site.url}/kontakti`,
+  },
 };
 
 export default function ContactsPage() {

@@ -39,12 +39,68 @@ test.beforeEach(async ({ page }) => {
 
 test("the header displays the B-Consult logo", async ({ page }) => {
   await page.goto("/");
-  await expect(page).toHaveTitle("Б-Консулт");
+  await expect(page).toHaveTitle(
+    "Счетоводни и административни услуги в Кирково | Б-Консулт",
+  );
   const logo = page.getByRole("img", { name: "Б-Консулт — лого" });
   await expect(logo).toBeVisible();
   expect(
     await logo.evaluate((image: HTMLImageElement) => image.naturalWidth),
   ).toBeGreaterThan(0);
+});
+
+test("the public SEO files reference the canonical site and routes", async ({
+  page,
+  request,
+}) => {
+  const robotsResponse = await request.get("/robots.txt");
+  expect(robotsResponse.ok()).toBeTruthy();
+  const robots = await robotsResponse.text();
+  expect(robots).toContain("Allow: /");
+  expect(robots).toContain("Sitemap: https://www.bonev-consult.bg/sitemap.xml");
+
+  const sitemapResponse = await request.get("/sitemap.xml");
+  expect(sitemapResponse.ok()).toBeTruthy();
+  const sitemap = await sitemapResponse.text();
+  expect(sitemap).toContain("<loc>https://www.bonev-consult.bg</loc>");
+  expect(sitemap).toContain("<loc>https://www.bonev-consult.bg/kontakti</loc>");
+  for (const slug of [
+    "schetovodni-uslugi",
+    "administrativni-uslugi",
+    "sadeistvie-pred-darzhavni-institutsii",
+    "evropeiski-i-natsionalni-proekti",
+    "registratsiya-na-firmi-i-npo",
+    "zastrahovki",
+    "dokumenti-za-pensionirane",
+  ]) {
+    expect(sitemap).toContain(
+      `<loc>https://www.bonev-consult.bg/uslugi/${slug}</loc>`,
+    );
+  }
+
+  await page.goto("/");
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    "href",
+    "https://www.bonev-consult.bg",
+  );
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+    "content",
+    "index, follow",
+  );
+
+  await page.goto("/kontakti");
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    "href",
+    "https://www.bonev-consult.bg/kontakti",
+  );
+  await expect(page).toHaveTitle("Контакти | Б-Консулт");
+
+  await page.goto("/uslugi/schetovodni-uslugi");
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    "href",
+    "https://www.bonev-consult.bg/uslugi/schetovodni-uslugi",
+  );
+  await expect(page).toHaveTitle("Счетоводни услуги | Б-Консулт");
 });
 
 test("the market ticker shows Bulgaria time and all quotes", async ({

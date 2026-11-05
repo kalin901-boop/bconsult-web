@@ -8,8 +8,23 @@ import { site } from "@/lib/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: site.name,
+  metadataBase: new URL(site.url),
+  title: {
+    default: site.name,
+    template: `%s | ${site.name}`,
+  },
   description: site.description,
+  openGraph: {
+    type: "website",
+    locale: "bg_BG",
+    siteName: site.name,
+    title: site.name,
+    description: site.description,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

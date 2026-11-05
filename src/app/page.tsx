@@ -1,4 +1,22 @@
+import type { Metadata } from "next";
+
 import { MarketTicker } from "@/components/market-ticker";
+import { site } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: "Счетоводни и административни услуги в Кирково | Б-Консулт",
+  description:
+    "Счетоводно обслужване, административно съдействие и услуги за бизнеса и физически лица в Кирково. Свържете се с Б-Консулт.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "Счетоводни и административни услуги в Кирково | Б-Консулт",
+    description:
+      "Счетоводно обслужване, административно съдействие и услуги за бизнеса и физически лица в Кирково.",
+    url: site.url,
+  },
+};
 
 export default function HomePage() {
   return (
@@ -8,7 +26,7 @@ export default function HomePage() {
         <div className="hero-copy">
           <p className="eyebrow">С грижа за вашия бизнес</p>
           <h1>
-            Очаквайте скоро
+            Счетоводни и административни услуги
             <br />
             <span>Б-Консулт</span>
           </h1>
