@@ -219,6 +219,202 @@ test("the accounting service page lists its service areas", async ({
   ).toHaveAttribute("href", "/kontakti");
 });
 
+test("the administrative service page lists its service areas", async ({
+  page,
+}) => {
+  await page.goto("/uslugi/administrativni-uslugi");
+
+  await expect(
+    page.getByRole("heading", { name: "Подготовка и проверка на документи" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Подаване и получаване на документи" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Заявления, удостоверения и справки" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Регистрации и промени на фирми и НПО" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Документи за пенсиониране" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Документи по проекти и програми" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Други административни услуги" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Свържете се с нас" }),
+  ).toHaveAttribute("href", "/kontakti");
+});
+
+test("the public institutions page lists its service areas", async ({
+  page,
+}) => {
+  await page.goto("/uslugi/sadeistvie-pred-darzhavni-institutsii");
+
+  await expect(
+    page.getByRole("heading", { name: "Заявления и декларации" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Документи към НАП" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Документи към НОИ" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Агенция по вписванията и Търговски регистър",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Общински и областни администрации" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Справки, удостоверения и преписки" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Писма, искания и проверки" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Други институции и процедури" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Свържете се с нас" }),
+  ).toHaveAttribute("href", "/kontakti");
+});
+
+test("the projects page lists its service areas", async ({ page }) => {
+  await page.goto("/uslugi/evropeiski-i-natsionalni-proekti");
+
+  await expect(
+    page.getByRole("heading", {
+      name: "Програми и възможности за финансиране",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Условия за кандидатстване и допустимост",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Проектно предложение и бюджет" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Документи за кандидатстване" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Изпълнение и административно отчитане",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Искания за плащане и финансови отчети",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Национални програми и схеми" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Европейски програми" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Други проектни и консултантски услуги",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Свържете се с нас" }),
+  ).toHaveAttribute("href", "/kontakti");
+});
+
+test("the company and nonprofit registration page lists its services", async ({
+  page,
+}) => {
+  await page.goto("/uslugi/registratsiya-na-firmi-i-npo");
+
+  await expect(
+    page.getByRole("heading", { name: "Правна форма и вид организация" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Регистрация на фирма" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Регистрация на сдружение или фондация",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Подаване в Търговския регистър и регистъра на ЮЛНЦ",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Промени в обстоятелствата" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Прекратяване и ликвидация" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Регистрация по ДДС и начални счетоводни стъпки",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Други регистрационни и административни услуги",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Свържете се с нас" }),
+  ).toHaveAttribute("href", "/kontakti");
+});
+
+test("the retirement documents page lists its service areas", async ({
+  page,
+}) => {
+  await page.goto("/uslugi/dokumenti-za-pensionirane");
+
+  await expect(
+    page.getByRole("heading", { name: "Насоки за необходимите документи" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Документи за осигурителен стаж и доход",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Заявления и комплект документи" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Удостоверения от институции и работодатели",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Подаване и проследяване на преписка пред НОИ",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Липсващи или непълни документи" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Осигурителен стаж от чужбина" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Други услуги, свързани с пенсиониране",
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Свържете се с нас" }),
+  ).toHaveAttribute("href", "/kontakti");
+});
+
 test("all listed services have their own page", async ({ page }) => {
   const servicePages = [
     ["schetovodni-uslugi", "Счетоводни услуги"],
@@ -236,8 +432,17 @@ test("all listed services have their own page", async ({ page }) => {
   for (const [slug, title] of servicePages) {
     const response = await page.goto(`/uslugi/${slug}`);
     expect(response?.status()).toBe(200);
-    await expect(page.getByRole("heading", { name: title })).toBeVisible();
-    if (slug !== "schetovodni-uslugi") {
+    await expect(
+      page.getByRole("main").getByRole("heading", { name: title, level: 1 }),
+    ).toBeVisible();
+    if (
+      slug !== "schetovodni-uslugi" &&
+      slug !== "administrativni-uslugi" &&
+      slug !== "sadeistvie-pred-darzhavni-institutsii" &&
+      slug !== "evropeiski-i-natsionalni-proekti" &&
+      slug !== "registratsiya-na-firmi-i-npo" &&
+      slug !== "dokumenti-za-pensionirane"
+    ) {
       await expect(
         page.getByText("Подготвяме подробната информация за тази услуга."),
       ).toBeVisible();
