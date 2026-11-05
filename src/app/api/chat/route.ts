@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
     return Response.json(
       { error: "Възникна проблем при връзката с асистента." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
