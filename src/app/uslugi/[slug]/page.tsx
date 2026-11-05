@@ -38,7 +38,9 @@ export async function generateMetadata({
                 ? `Съдействие при регистрация и промени на фирми и организации с нестопанска цел от ${site.name}.`
                 : slug === "dokumenti-za-pensionirane"
                   ? `Съдействие при подготовка, подаване и проследяване на документи за пенсиониране от ${site.name}.`
-                  : `${service.title} от ${site.name}.`,
+                  : slug === "zastrahovki"
+                    ? `Работим с наши партньори. Очаквайте повече информация скоро.`
+                    : `${service.title} от ${site.name}.`,
   };
 }
 
@@ -103,7 +105,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
           <section className="service-card">
             <h2>Самоосигуряващи се и свободни професии</h2>
             <p>
-              Счетоводно и данъчно съдействие за самоосигуряващи се лица и
+              Счетоводно и данъчно съдействие за самоосигуряващи се лица и лица,
               упражняващи свободни професии, съобразено с конкретния начин на
               работа и приложимия режим.
             </p>
@@ -495,8 +497,8 @@ export default async function ServicePage({ params }: ServicePageProps) {
           <section className="service-card">
             <h2>Удостоверения от институции и работодатели</h2>
             <p>
-              Съдействие при изясняване и набавяне на необходими удостоверения и
-              документи от институции и работодатели.
+              Съдействие при изясняване и набавяне на необходимите удостоверения
+              и документи от институции и работодатели.
             </p>
           </section>
           <section className="service-card">
@@ -545,8 +547,9 @@ export default async function ServicePage({ params }: ServicePageProps) {
       <p className="eyebrow">Услуги на Б-Консулт</p>
       <h1>{service.title}</h1>
       <p className="hero-description">
-        Подготвяме подробната информация за тази услуга. Скоро ще добавим повече
-        информация.
+        {slug === "zastrahovki"
+          ? "Работим с наши партньори. Очаквайте повече информация скоро."
+          : "Подготвяме подробната информация за тази услуга. Скоро ще добавим повече информация."}
       </p>
       <Link className="home-link" href="/">
         Към началната страница <span aria-hidden="true">↗</span>

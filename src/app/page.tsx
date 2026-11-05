@@ -18,7 +18,7 @@ export default function HomePage() {
             пенсиониране.
           </p>
           <p className="coming-soon-note">
-            Подготвяме нашия нов сайт. До скоро!
+            Подготвяме новия си сайт. До скоро!
           </p>
         </div>
         <aside className="hero-art" aria-label="Основни направления">

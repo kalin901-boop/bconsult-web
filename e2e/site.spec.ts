@@ -441,10 +441,18 @@ test("all listed services have their own page", async ({ page }) => {
       slug !== "sadeistvie-pred-darzhavni-institutsii" &&
       slug !== "evropeiski-i-natsionalni-proekti" &&
       slug !== "registratsiya-na-firmi-i-npo" &&
-      slug !== "dokumenti-za-pensionirane"
+      slug !== "dokumenti-za-pensionirane" &&
+      slug !== "zastrahovki"
     ) {
       await expect(
         page.getByText("Подготвяме подробната информация за тази услуга."),
+      ).toBeVisible();
+    }
+    if (slug === "zastrahovki") {
+      await expect(
+        page.getByText(
+          "Работим с наши партньори. Очаквайте повече информация скоро.",
+        ),
       ).toBeVisible();
     }
   }
