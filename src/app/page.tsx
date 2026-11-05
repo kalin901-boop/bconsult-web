@@ -6,19 +6,14 @@ export default function HomePage() {
       <MarketTicker />
       <main id="main-content" className="landing shell" tabIndex={-1}>
         <div className="hero-copy">
-          <p className="eyebrow">С грижа за важните неща</p>
+          <p className="eyebrow">С грижа за вашия бизнес</p>
           <h1>
             Очаквайте скоро
             <br />
             <span>Б-Консулт</span>
           </h1>
           <p className="hero-description">
-            Счетоводни и административни услуги, съдействие пред държавни
-            институции, проекти, регистрации, застраховки и документи за
-            пенсиониране.
-          </p>
-          <p className="coming-soon-note">
-            Подготвяме новия си сайт. До скоро!
+            Вие гледате напред. Ние се грижим за важните детайли.
           </p>
         </div>
         <aside className="hero-art" aria-label="Основни направления">
