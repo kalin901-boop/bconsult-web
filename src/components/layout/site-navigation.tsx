@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 
+import { perfumeCategories } from "@/lib/perfume-categories";
 import { services } from "@/lib/services";
 
 function closeMenus() {
@@ -12,11 +13,25 @@ function closeMenus() {
 
 function ServiceLinks() {
   return (
-    <ul className="service-menu-list">
+    <ul className="dropdown-menu-list">
       {services.map((service) => (
         <li key={service.slug}>
           <Link href={`/uslugi/${service.slug}`} onClick={closeMenus}>
             {service.title}
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function PerfumeLinks() {
+  return (
+    <ul className="dropdown-menu-list">
+      {perfumeCategories.map((category) => (
+        <li key={category.slug}>
+          <Link href={`/magazin/${category.slug}`} onClick={closeMenus}>
+            {category.title}
           </Link>
         </li>
       ))}
@@ -31,9 +46,13 @@ export function SiteNavigation() {
         <Link className="navigation-home" href="/" onClick={closeMenus}>
           Начало
         </Link>
-        <details className="desktop-service-menu">
+        <details className="desktop-dropdown-menu">
           <summary>Услуги</summary>
           <ServiceLinks />
+        </details>
+        <details className="desktop-dropdown-menu">
+          <summary>Магазин</summary>
+          <PerfumeLinks />
         </details>
         <Link href="/kontakti" onClick={closeMenus}>
           Контакти
@@ -52,9 +71,13 @@ export function SiteNavigation() {
           <Link href="/" onClick={closeMenus}>
             Начало
           </Link>
-          <details className="mobile-service-menu">
+          <details className="mobile-dropdown-menu">
             <summary>Услуги</summary>
             <ServiceLinks />
+          </details>
+          <details className="mobile-dropdown-menu">
+            <summary>Магазин</summary>
+            <PerfumeLinks />
           </details>
           <Link href="/kontakti" onClick={closeMenus}>
             Контакти

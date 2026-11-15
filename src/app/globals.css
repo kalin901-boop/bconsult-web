@@ -95,21 +95,21 @@ a {
 }
 
 .desktop-navigation a,
-.desktop-service-menu > summary {
+.desktop-dropdown-menu > summary {
   color: var(--color-ink);
   font-size: 0.875rem;
   font-weight: 600;
   text-decoration: none;
 }
 
-.desktop-service-menu,
-.mobile-service-menu {
+.desktop-dropdown-menu,
+.mobile-dropdown-menu {
   position: relative;
 }
 
-.desktop-service-menu > summary,
+.desktop-dropdown-menu > summary,
 .mobile-navigation > summary,
-.mobile-service-menu > summary {
+.mobile-dropdown-menu > summary {
   display: flex;
   cursor: pointer;
   align-items: center;
@@ -117,14 +117,14 @@ a {
   list-style: none;
 }
 
-.desktop-service-menu > summary::-webkit-details-marker,
+.desktop-dropdown-menu > summary::-webkit-details-marker,
 .mobile-navigation > summary::-webkit-details-marker,
-.mobile-service-menu > summary::-webkit-details-marker {
+.mobile-dropdown-menu > summary::-webkit-details-marker {
   display: none;
 }
 
-.desktop-service-menu > summary::after,
-.mobile-service-menu > summary::after {
+.desktop-dropdown-menu > summary::after,
+.mobile-dropdown-menu > summary::after {
   width: 0.45rem;
   height: 0.45rem;
   transform: translateY(-0.125rem) rotate(45deg);
@@ -134,12 +134,12 @@ a {
   transition: transform 160ms ease;
 }
 
-.desktop-service-menu[open] > summary::after,
-.mobile-service-menu[open] > summary::after {
+.desktop-dropdown-menu[open] > summary::after,
+.mobile-dropdown-menu[open] > summary::after {
   transform: translateY(0.125rem) rotate(225deg);
 }
 
-.service-menu-list {
+.dropdown-menu-list {
   position: absolute;
   z-index: 5;
   top: calc(100% + 0.875rem);
@@ -156,7 +156,7 @@ a {
   list-style: none;
 }
 
-.service-menu-list a {
+.dropdown-menu-list a {
   display: block;
   border-radius: 0.25rem;
   padding: 0.75rem;
@@ -167,8 +167,8 @@ a {
   text-decoration: none;
 }
 
-.service-menu-list a:hover,
-.service-menu-list a:focus-visible {
+.dropdown-menu-list a:hover,
+.dropdown-menu-list a:focus-visible {
   background: #f8f4eb;
   color: #795619;
 }
@@ -745,7 +745,7 @@ h1 span {
   }
 
   .mobile-menu-panel > a,
-  .mobile-service-menu > summary {
+  .mobile-dropdown-menu > summary {
     display: flex;
     min-height: 2.75rem;
     align-items: center;
@@ -756,17 +756,17 @@ h1 span {
     text-decoration: none;
   }
 
-  .mobile-service-menu > summary {
+  .mobile-dropdown-menu > summary {
     justify-content: space-between;
     cursor: pointer;
     list-style: none;
   }
 
-  .mobile-service-menu > summary::-webkit-details-marker {
+  .mobile-dropdown-menu > summary::-webkit-details-marker {
     display: none;
   }
 
-  .mobile-service-menu .service-menu-list {
+  .mobile-dropdown-menu .dropdown-menu-list {
     position: static;
     width: auto;
     max-height: none;
@@ -775,7 +775,7 @@ h1 span {
     box-shadow: none;
   }
 
-  .mobile-service-menu .service-menu-list a {
+  .mobile-dropdown-menu .dropdown-menu-list a {
     padding: 0.625rem 0.75rem;
   }
 

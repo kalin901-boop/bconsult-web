@@ -77,6 +77,11 @@ test("the public SEO files reference the canonical site and routes", async ({
       `<loc>https://www.bonev-consult.bg/uslugi/${slug}</loc>`,
     );
   }
+  for (const slug of ["damski", "muzhki"]) {
+    expect(sitemap).toContain(
+      `<loc>https://www.bonev-consult.bg/magazin/${slug}</loc>`,
+    );
+  }
 
   await page.goto("/");
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
@@ -237,9 +242,9 @@ test("the services menu opens a service page", async ({ page, isMobile }) => {
 
   if (isMobile) {
     await page.locator(".mobile-navigation > summary").click();
-    await page.locator(".mobile-service-menu > summary").click();
+    await page.locator(".mobile-dropdown-menu > summary").first().click();
   } else {
-    await page.locator(".desktop-service-menu > summary").click();
+    await page.locator(".desktop-dropdown-menu > summary").first().click();
   }
 
   const navigation = page.getByRole("navigation", {
@@ -255,6 +260,37 @@ test("the services menu opens a service page", async ({ page, isMobile }) => {
       page.getByRole("navigation", { name: "Основна навигация" }),
     ).toBeHidden();
   }
+});
+
+test("the perfume menu opens the women's category and WhatsApp contact", async ({
+  page,
+  isMobile,
+}) => {
+  await page.goto("/");
+
+  if (isMobile) {
+    await page.locator(".mobile-navigation > summary").click();
+    await page.locator(".mobile-dropdown-menu > summary").nth(1).click();
+  } else {
+    await page.locator(".desktop-dropdown-menu > summary").nth(1).click();
+  }
+
+  const navigation = page.getByRole("navigation", {
+    name: "Основна навигация",
+  });
+  await navigation.getByRole("link", { name: "Дамски парфюми" }).click();
+  await expect(page).toHaveURL("/magazin/damski");
+  await expect(
+    page.getByRole("heading", { name: "Дамски парфюми" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /Попитайте в WhatsApp/ }),
+  ).toHaveAttribute("href", /wa\.me\/359887807097\?text=/);
+
+  await page.goto("/magazin/muzhki");
+  await expect(
+    page.getByRole("heading", { name: "Мъжки парфюми" }),
+  ).toBeVisible();
 });
 
 test("the accounting service page lists its service areas", async ({
