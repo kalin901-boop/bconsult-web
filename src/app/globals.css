@@ -403,6 +403,18 @@ h1 span {
   margin-top: 2rem;
 }
 
+.perfume-product + .perfume-product {
+  margin-top: 4rem;
+}
+
+.perfume-product > h2 {
+  margin: 3rem 0 0;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 400;
+}
+
 .perfume-card {
   overflow: hidden;
   border: 1px solid var(--color-line);
@@ -452,6 +464,13 @@ h1 span {
   color: var(--color-ink);
   font-size: 1.125rem;
   font-weight: 700;
+}
+
+.perfume-availability {
+  margin: 0.75rem 0 0;
+  color: var(--color-muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
 }
 
 .perfume-card .home-link {
