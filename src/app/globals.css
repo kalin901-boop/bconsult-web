@@ -103,13 +103,15 @@ a {
 }
 
 .desktop-dropdown-menu,
-.mobile-dropdown-menu {
+.mobile-dropdown-menu,
+.mobile-store-dropdown {
   position: relative;
 }
 
 .desktop-dropdown-menu > summary,
 .mobile-navigation > summary,
-.mobile-dropdown-menu > summary {
+.mobile-dropdown-menu > summary,
+.mobile-store-dropdown > summary {
   display: flex;
   cursor: pointer;
   align-items: center;
@@ -119,12 +121,14 @@ a {
 
 .desktop-dropdown-menu > summary::-webkit-details-marker,
 .mobile-navigation > summary::-webkit-details-marker,
-.mobile-dropdown-menu > summary::-webkit-details-marker {
+.mobile-dropdown-menu > summary::-webkit-details-marker,
+.mobile-store-dropdown > summary::-webkit-details-marker {
   display: none;
 }
 
 .desktop-dropdown-menu > summary::after,
-.mobile-dropdown-menu > summary::after {
+.mobile-dropdown-menu > summary::after,
+.mobile-store-dropdown > summary::after {
   width: 0.45rem;
   height: 0.45rem;
   transform: translateY(-0.125rem) rotate(45deg);
@@ -135,7 +139,8 @@ a {
 }
 
 .desktop-dropdown-menu[open] > summary::after,
-.mobile-dropdown-menu[open] > summary::after {
+.mobile-dropdown-menu[open] > summary::after,
+.mobile-store-dropdown[open] > summary::after {
   transform: translateY(0.125rem) rotate(225deg);
 }
 
@@ -174,6 +179,10 @@ a {
 }
 
 .mobile-navigation {
+  display: none;
+}
+
+.mobile-header-navigation {
   display: none;
 }
 
@@ -706,6 +715,35 @@ h1 span {
     display: block;
   }
 
+  .mobile-header-navigation {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
+
+  .mobile-store-navigation {
+    position: relative;
+  }
+
+  .mobile-store-dropdown > summary {
+    min-height: 2.75rem;
+    justify-content: space-between;
+    cursor: pointer;
+    border: 1px solid var(--color-line);
+    border-radius: 0.375rem;
+    padding: 0.65rem 0.75rem;
+    color: var(--color-ink);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    list-style: none;
+  }
+
+  .mobile-store-dropdown .dropdown-menu-list {
+    top: calc(100% + 0.625rem);
+    width: min(20rem, 85vw);
+    max-height: min(70svh, 32rem);
+  }
+
   .mobile-navigation > summary {
     border: 1px solid var(--color-line);
     border-radius: 0.375rem;
@@ -826,6 +864,21 @@ h1 span {
     align-items: flex-start;
     flex-direction: column;
     gap: 0.5rem;
+  }
+
+  .brand-logo {
+    width: 6.25rem;
+  }
+
+  .mobile-header-navigation {
+    gap: 0.375rem;
+  }
+
+  .mobile-store-dropdown > summary,
+  .mobile-navigation > summary {
+    gap: 0.45rem;
+    padding-inline: 0.5rem;
+    font-size: 0.75rem;
   }
 
   .domain-details {

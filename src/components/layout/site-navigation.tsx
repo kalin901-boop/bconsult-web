@@ -58,32 +58,36 @@ export function SiteNavigation() {
           Контакти
         </Link>
       </nav>
-      <details className="mobile-navigation">
-        <summary>
-          <span className="menu-icon" aria-hidden="true">
-            <span />
-            <span />
-            <span />
-          </span>
-          Меню
-        </summary>
-        <nav className="mobile-menu-panel" aria-label="Основна навигация">
-          <Link href="/" onClick={closeMenus}>
-            Начало
-          </Link>
-          <details className="mobile-dropdown-menu">
-            <summary>Услуги</summary>
-            <ServiceLinks />
-          </details>
-          <details className="mobile-dropdown-menu">
+      <div className="mobile-header-navigation">
+        <nav className="mobile-store-navigation" aria-label="Магазин">
+          <details className="mobile-store-dropdown">
             <summary>Магазин</summary>
             <PerfumeLinks />
           </details>
-          <Link href="/kontakti" onClick={closeMenus}>
-            Контакти
-          </Link>
         </nav>
-      </details>
+        <details className="mobile-navigation">
+          <summary>
+            <span className="menu-icon" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
+            Меню
+          </summary>
+          <nav className="mobile-menu-panel" aria-label="Основна навигация">
+            <Link href="/" onClick={closeMenus}>
+              Начало
+            </Link>
+            <details className="mobile-dropdown-menu">
+              <summary>Услуги</summary>
+              <ServiceLinks />
+            </details>
+            <Link href="/kontakti" onClick={closeMenus}>
+              Контакти
+            </Link>
+          </nav>
+        </details>
+      </div>
     </>
   );
 }

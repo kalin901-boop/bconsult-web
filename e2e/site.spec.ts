@@ -269,15 +269,17 @@ test("the perfume menu opens the women's category and WhatsApp contact", async (
   await page.goto("/");
 
   if (isMobile) {
-    await page.locator(".mobile-navigation > summary").click();
-    await page.locator(".mobile-dropdown-menu > summary").nth(1).click();
+    await expect(
+      page.getByRole("navigation", { name: "Магазин" }),
+    ).toBeVisible();
+    await page.locator(".mobile-store-dropdown > summary").click();
   } else {
     await page.locator(".desktop-dropdown-menu > summary").nth(1).click();
   }
 
-  const navigation = page.getByRole("navigation", {
-    name: "Основна навигация",
-  });
+  const navigation = isMobile
+    ? page.getByRole("navigation", { name: "Магазин" })
+    : page.getByRole("navigation", { name: "Основна навигация" });
   await navigation.getByRole("link", { name: "Дамски парфюми" }).click();
   await expect(page).toHaveURL("/magazin/damski");
   await expect(
