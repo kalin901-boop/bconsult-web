@@ -262,7 +262,7 @@ test("the services menu opens a service page", async ({ page, isMobile }) => {
   }
 });
 
-test("the perfume menu opens the women's category and WhatsApp contact", async ({
+test("the perfume menu opens the women's category and product variants", async ({
   page,
   isMobile,
 }) => {
@@ -285,8 +285,19 @@ test("the perfume menu opens the women's category and WhatsApp contact", async (
   await expect(
     page.getByRole("heading", { name: "Дамски парфюми" }),
   ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Adriana" })).toHaveCount(2);
+  await expect(page.getByText("Eau de Parfum · 50 мл")).toBeVisible();
+  await expect(page.getByText("Eau de Parfum · 100 мл")).toBeVisible();
+  await expect(page.getByText("19,00 €")).toBeVisible();
+  await expect(page.getByText("29,75 €")).toBeVisible();
   await expect(
-    page.getByRole("link", { name: /Попитайте в WhatsApp/ }),
+    page.getByRole("img", { name: "Флакон YODEYMA Adriana, 50 мл" }),
+  ).toHaveAttribute("src", /yodeyma-adriana-50ml\.jpg/);
+  await expect(
+    page.getByRole("img", { name: "Флакон YODEYMA Adriana, 100 мл" }),
+  ).toHaveAttribute("src", /yodeyma-adriana-100ml\.jpg/);
+  await expect(
+    page.getByRole("link", { name: /Запитване за YODEYMA Adriana/ }).first(),
   ).toHaveAttribute("href", /wa\.me\/359887807097\?text=/);
 
   await page.goto("/magazin/muzhki");
